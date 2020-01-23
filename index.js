@@ -84,21 +84,21 @@ const jsonRpcEnabled = [{
 },
 ]
 
-// const clientIp = async () => {
-//   try {
-//       const response = await fetch('http://api.ipify.org/?format=json');
-//       const data = await response.json();
-//       return data.ip;
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
+const clientIP = async() => {
+  try {
+      const response = await fetch('http://api.ipify.org/?format=json');
+      const data = await response.json();
+      return data.ip;
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 const jsonRpcUrl = [{
   type: 'input',
   name: 'Host',
   message: 'What should be the JSON RPC Host IP? (this should be the same as your host machine IP address)',
-  default: '127.0.0.1',
+  default: clientIP
 }]
 
 const ethStatsOptions = [
@@ -130,7 +130,8 @@ const ethStatsOptions = [
 
 const args = process.argv.slice(2)
 
-inquirer.prompt(mainOptions).then(o => {
+const dialog = async () => {
+  inquirer.prompt(mainOptions).then(o => {
   if (o.mainConfig === 'cli') {
     startProcess(applications.cli, []);
     return;
@@ -173,6 +174,7 @@ inquirer.prompt(mainOptions).then(o => {
     })
   });
 });
+}
 
 function ethStats(jsonObject, config) {
   if (jsonObject.EthStats.Enabled == false) {
@@ -223,6 +225,7 @@ function startProcess(name, args) {
   });
 }
 
+dialog()
 module.exports = {
   applications,
   options,
